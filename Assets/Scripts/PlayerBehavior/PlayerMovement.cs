@@ -9,29 +9,25 @@ public class PlayerMovement : MonoBehaviour
     public float sensivityHorizontal = 3f;
 
     private Rigidbody rigidbody;
+    private TeleportBehaviour teleportBehaviour;
 
     private bool isGround;
+    private bool isRunning;
     private float fallingSpeed = 18f;
     private float gravityForce;
     private Vector3 movementVector;
 
     void Start()
     {
+        teleportBehaviour = gameObject.GetComponent<TeleportBehaviour>();
         rigidbody = gameObject.GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     void FixedUpdate()
     {
-        PlayerGravitation();
-        PlayerMove();
-    }
-
-    private void PlayerGravitation()
-    {
-        
-
         PlayerJumping();
+        PlayerMove();
     }
 
     private void PlayerMove()
@@ -76,6 +72,12 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             isGround = false;
+        }
+
+        if (other.gameObject.tag == "EndTeleport")
+        {
+            Vector3 newLevel = teleportBehaviour.GetTeleportPosition(other.gameObject.name);
+            gameObject.transform.position = newLevel + new Vector3(-6f, -43f, -10f);
         }
     }
 }
